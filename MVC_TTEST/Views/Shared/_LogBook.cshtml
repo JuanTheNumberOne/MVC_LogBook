@@ -1,0 +1,77 @@
+﻿@using MVC_TTEST.Classes
+@model IEnumerable<MVC_TTEST.Models.ParameterLogView>
+
+@*
+    Data display for retrieved list
+*@
+
+<head>
+    <title align="center">LOG BOOK</title>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/dragscroll.js"></script>
+
+    @{ /*references: jquery, javascript*/}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+
+    <style>
+        body {
+            background-color: white
+        }
+
+        th {
+            background-color: lightgray
+        }
+
+        .table.table-bordered tbody tr td {
+            text-align: center;
+            border: 0.5pt solid black;
+        }
+
+        .table.table-bordered tbody tr:hover td {
+            background-color: mediumseagreen;
+        }
+
+        .table.table-bordered tr th {
+            text-align: center;
+            border: 1pt solid black;
+            border-bottom: 3pt solid black;
+        }
+    </style>
+
+</head>
+
+<table id="table-1" align="center" class="table table-bordered " style="width:1000px ; margin-top:0%; margin-bottom:2%; margin-left: 0px ; background-color:white">
+    <thead style=" text-align:center">
+        <tr>
+            <th>Użytkownik</th>
+            <th>Funkcja</th>
+            <th>Nazwa parametru</th>
+            <th>Nowa wartość</th>
+            <th>Stara wartość</th>
+            <th>Czas zmiany</th>
+            <th>Data zmiany</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (Model != null)
+        {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Logged_User</td>
+                <td>@HtmlHelpers.Get_User_Function((short)item.User_Group_Number)</td>
+                <td>@item.Parameter_Changed </td>
+                <td>@item.Actual_Value</td>
+                <td>@item.Old_Value </td>
+                <td>@item.Time_Of_Change </td>
+                <td>@item.Date_Of_Change </td>
+            </tr>
+           }
+        }
+    </tbody>
+</table>
+
+
+

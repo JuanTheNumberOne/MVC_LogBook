@@ -1,0 +1,148 @@
+﻿@using MVC_TTEST.Classes
+@model IEnumerable<MVC_TTEST.Models.ParameterLogView>
+
+@{
+
+    ViewBag.Title = "Logbook";
+    Layout = null;
+}
+
+
+<head>
+    <title align="center">LOG BOOK</title>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/dragscroll.js"></script>
+
+    @{ /*references: jquery, javascript*/}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <style>
+        body {
+            background-color: white
+        }
+
+        th {
+            background-color: lightgray
+        }
+
+        .table.table-bordered tbody tr td {
+            text-align: center;
+            border: 0.5pt solid black;
+        }
+
+        .table.table-bordered tbody tr:hover td {
+            background-color: mediumseagreen;
+        }
+
+        .table.table-bordered tr th {
+            text-align: center;
+            border: 1pt solid black;
+            border-bottom: 3pt solid black;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <h1 align="center">LOG BOOK </h1>
+
+    @*Search filter partial view*@
+    @{Html.RenderPartial("_SearchFilter"); }
+
+
+    <script>
+
+    @*Get filtered search parameters*@
+        function submitForm(parameter)
+        {
+
+            @*
+            Two ways of read/write variables
+
+            1. By getting the element id in the document
+
+            document.getElementById("demo").innerHTML
+
+            2. By jquery ($)
+
+            $('#txtName').val();
+            *@
+
+            @*Variables to store the dates*@
+            var date_from = $("#datepicker_from").datepicker({ dateFormat: "dd-mm-yy" }).val();
+            var date_to = $("#datepicker_to").datepicker({ dateFormat: "dd-mm-yy" }).val();
+
+            @*Variable to store the chosen user*@
+            var user_chosen = $("#User_Selector").val();
+
+            @*Variable to store the chosen shift*@
+            var shift_chosen = $("#Shift_Selector").val()
+
+            @*JSON data model sent to the server*@
+            var model = new Object();
+            model.Date_from = date_from
+            model.Date_to = date_to
+            model.User_Selected = user_chosen
+            model.Shift_Selected = shift_chosen
+
+            jQuery.ajax({
+            type: "POST",
+            url: "@Url.Action("_Logbook")",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({ Parameters: model }),
+            success: function (data) {
+                console.log(data);
+
+                if (data.Error_Alert)
+                {
+                    alert(data.Error_Alert);
+                }
+
+                else
+                {
+                    $("#Parameters_container").html(data);
+                }
+
+            },
+            error: function (errMsg) {
+                console.log(JSON.stringify(errMsg));
+            }
+            });
+
+        }
+
+    </script>
+
+    <input type="button" value="Search" onclick="submitForm()" />
+    @*<input type = "text" id = "txtName" placeholder = "Date"/>*@
+
+    <div align="center" id="Parameters_container" class="dragscroll container" style="width:auto ; margin-left: 0px ; height:80%; overflow-y:scroll; margin-top: 1%; background-color:dodgerblue ; cursor:all-scroll">
+
+    </div>
+
+
+</body>
+
+<footer>
+    <div class="table table-bordered" style="position: absolute ; bottom:-10px; width:100%; height:3%">
+        <p align="center">@Html.ActionLink("Logbook Login", "Login")</p>
+    </div>
+</footer>
+
+@*//The partial view substitutes the following code
+
+    <tr>
+            <td>@item.Logged_User </td>
+            <td>@HtmlHelpers.Get_User_Function((short)item.User_Group_Number)</td>
+            <td>@item.Parameter_Changed </td>
+            <td>@item.Actual_Value</td>
+            <td>@item.Old_Value </td>
+            <td>@item.Time_Of_Change </td>
+            <td>@item.Date_Of_Change </td>
+    </tr>
+
+*@
+
