@@ -332,7 +332,6 @@ ASALocalRun/
 #Other
 App_Start/
 Global.asax
-Classes
 Content
 Global.asax.cs
 ST10_DB.*
