@@ -1,5 +1,58 @@
 ﻿@*Partial view that contains the options used to do a filtered search*@
 
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+@*Get the avaible users in the database*@
+
+<script>
+//Variable to store the last number of users
+    var Previous_User_Number = 0;
+function GetAvaibleUsers()
+        {
+        var val = {};
+        var select = document.getElementById("User_Selector");
+            val.url = "@Url.Action("_GetUsers")";
+            val.type = "GET";
+            val.dataType = "json";
+            val.contentTYpe = "application/json";
+            val.success = function (data)
+            {
+                //After adding the users do not refresh until page loaded again or the number of users has changed
+                if (select.children.length < 2 || data.User_List.length != Previous_User_Number)
+                {
+                    //Delete all previous options
+                    while (select.firstChild) {
+                        select.removeChild(select.firstChild);
+                    }
+
+                    //Add the users
+                    for (var i = 0; i <= data.User_List.length; i++) {
+                        var opt = document.createElement('option');
+                        opt.value = data.User_List[i];
+                        opt.innerHTML = data.User_List[i];
+                        select.appendChild(opt);
+                    }
+
+                    //Add the all users option
+                    var opt_all = document.createElement('option');
+                    opt.value = "";
+                    opt.innerHTML = "All Users";
+                    select.appendChild(opt);
+ 
+                    //Remember the last number of users
+                    Previous_User_Number = data.User_List.length;
+                    
+
+                }
+
+
+            };
+            $.ajax(val);
+        }
+</script>
+
 <table class="table-bordered">
     <tr>
         <td>
@@ -12,8 +65,9 @@
 
         <td>
             <form>
-                <select name="Users" id="User_Selector">
+                <select name="Users" id="User_Selector" onclick="GetAvaibleUsers()" style="width: 180px ; resize:vertical ; overflow-y:auto" >
                     <option style="text-align:center" disabled selected value=""> -- Select an user -- </option>
+                @*
                     <option value="Mario">Mario</option>
                     <option value="Jan">Jan</option>
                     <option value="David">David</option>
@@ -25,27 +79,28 @@
                     <option value="Norton">Norton</option>
                     <option value="Szymon">Szymon</option>
                     <option value="">All users</option>
-                </select>
-            </form>
-        </td>
+                *@
+                    </select>
+                    </form>
+                    </td>
 
-        <td>
-            <form>
-                <select name="Shift" id="Shift_Selector">
-                    <option style="text-align:center" disabled selected value=""> ------ Select a shift ------ </option>
-                    <option value= 1>First shift  (6 AM - 2 PM)</option>
-                    <option value= 2>Second shift (2 PM - 20 PM)</option>
-                    <option value= 3>Third shift  (20 PM - 6AM)</option>
-                    <option value= 0>All</option>
-                </select>
-            </form>
-        </td>
+                    <td>
+                        <form>
+                            <select name="Shift" id="Shift_Selector">
+                                <option style="text-align:center" disabled selected value=""> ------ Select a shift ------ </option>
+                                <option value=1>First shift  (6 AM - 2 PM)</option>
+                                <option value=2>Second shift (2 PM - 20 PM)</option>
+                                <option value=3>Third shift  (20 PM - 6AM)</option>
+                                <option value=0>All</option>
+                            </select>
+                        </form>
+                    </td>
 
-    </tr>
-</table>
+                    </tr>
+                </table>
 
 @*DatePicker initialize*@
 <script>
-        $("#datepicker_from").datepicker({ dateFormat: "dd-mm-yy" });
-        $("#datepicker_to").datepicker({ dateFormat: "dd-mm-yy" });
+    $("#datepicker_from").datepicker({ dateFormat: "dd-mm-yy" });
+    $("#datepicker_to").datepicker({ dateFormat: "dd-mm-yy" });
 </script>

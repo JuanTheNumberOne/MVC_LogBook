@@ -56,9 +56,9 @@ namespace MVC_TTEST.Controllers
 
             //Get the shift
             int iShift = Parameters.Shift_Selected;
-            DateTime oShift_First =  DateTime.ParseExact ("06:00:00", "HH:mm:ss", CultureInfo.InvariantCulture);
-            DateTime oShift_Second = DateTime.ParseExact ("14:00:00", "HH:mm:ss", CultureInfo.InvariantCulture);
-            DateTime oShift_Third =  DateTime.ParseExact ("20:00:00", "HH:mm:ss", CultureInfo.InvariantCulture);
+            DateTime oShift_First = DateTime.ParseExact("06:00:00", "HH:mm:ss", CultureInfo.InvariantCulture);
+            DateTime oShift_Second = DateTime.ParseExact("14:00:00", "HH:mm:ss", CultureInfo.InvariantCulture);
+            DateTime oShift_Third = DateTime.ParseExact("20:00:00", "HH:mm:ss", CultureInfo.InvariantCulture);
 
             //Parse the string to DateTime format (with exception handling)
             try
@@ -83,7 +83,7 @@ namespace MVC_TTEST.Controllers
             }
 
             try
-            { 
+            {
                 oDate_To = DateTime.ParseExact(sDate_to, "dd-MM-yyyy", CultureInfo.InvariantCulture);
             }
 
@@ -116,16 +116,16 @@ namespace MVC_TTEST.Controllers
             (b =>
             //Date
             DateTime.ParseExact(b.Date_Of_Change, "dd-MM-yyyy", CultureInfo.InvariantCulture) >= oDate_From &&
-            DateTime.ParseExact(b.Date_Of_Change, "dd-MM-yyyy", CultureInfo.InvariantCulture) <= oDate_To ).Where
+            DateTime.ParseExact(b.Date_Of_Change, "dd-MM-yyyy", CultureInfo.InvariantCulture) <= oDate_To).Where
 
-            (y=>
+            (y =>
 
             //User
-            sUser != "All" ? 
+            sUser != "All" ?
             y.Logged_User == sUser : y.Logged_User != sUser).Where  //Second where is used because && operator was only executed when b.Logged_User != sUser
 
-            (x=>
-         
+            (x =>
+
             //Shift
             iShift != 0 ?
                 iShift == 1 ?
@@ -138,9 +138,9 @@ namespace MVC_TTEST.Controllers
                         :
                         DateTime.ParseExact(x.Time_Of_Change, "HH:mm:ss", CultureInfo.InvariantCulture).TimeOfDay >= oShift_Third.TimeOfDay ||
                         DateTime.ParseExact(x.Time_Of_Change, "HH:mm:ss", CultureInfo.InvariantCulture).TimeOfDay <= oShift_First.TimeOfDay
-            : 
+            :
             x.Time_Of_Change != null
-            )      
+            )
             //End of table filters
 
             //List sort parameters
@@ -150,9 +150,9 @@ namespace MVC_TTEST.Controllers
 
             //Convert to list
             .ToList();
-          
 
-            List<ParameterLogView> Parameter_VM_List = Parameter_History_List.Select(x => new ParameterLogView 
+
+            List<ParameterLogView> Parameter_VM_List = Parameter_History_List.Select(x => new ParameterLogView
             {
                 Logged_User = x.Logged_User,
                 User_Group_Number = x.User_Group_Number,
@@ -166,6 +166,47 @@ namespace MVC_TTEST.Controllers
               .ToList();
 
             return PartialView(Parameter_VM_List);
+        }
+
+        //Retrieve list of users avaible in the database
+        [HttpGet]
+        public ActionResult _GetUsers()
+        {
+            User_Model _Users = new User_Model();
+
+            //Create an entity based in the database
+            Entities Logbook_DB = new Entities();
+            
+
+            //Create JSON error model and initialize with 0 values
+            Error_Model_JSON Date_Parse_Error = new Error_Model_JSON();
+            Date_Parse_Error.Error_Code = 0;
+            Date_Parse_Error.Error_Alert = "";
+            Date_Parse_Error.Error_Message = "";
+
+            //Create the JSON alerts table
+            Error_Model_JSON_Messages Alerts = new Error_Model_JSON_Messages();
+
+            //Retrieve all the avaible users
+            List<USER_PARAMETER_LOGS> Parameter_History_List = Logbook_DB.USER_PARAMETER_LOGS.ToList();
+            var Users = Parameter_History_List.Select(a => a.Logged_User).Distinct().ToList();
+
+            if (User == null)
+            {
+                Date_Parse_Error.Error_Code = 200;
+                Date_Parse_Error.Error_Alert = Alerts.Error_Alerts[4];
+                Date_Parse_Error.Error_Message = "";
+                return Json(Date_Parse_Error);
+            }
+            //Copy it to the class
+            foreach (var item in Users)
+            {
+                _Users.User_List.Add(item);
+            }
+
+            //Return the data
+            return Json(_Users, JsonRequestBehavior.AllowGet);
+         
         }
 
         

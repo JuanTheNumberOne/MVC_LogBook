@@ -43,6 +43,7 @@ namespace MVC_TTEST.Models
             _Error_Alerts[1] = "No date provided in 'Date To' input. Use the pop-up calendar or write the date in dd-mm-yyyy format (example: 01-01-2000)";
             _Error_Alerts[2] = "Date provided in 'Date From' input has invalid format. Use the pop-up calendar or write the date in dd-mm-yyyy format (example: 01-01-2000)";
             _Error_Alerts[3] = "Date provided in 'Date To' input has invalid format. Use the pop-up calendar or write the date in dd-mm-yyyy format (example: 01-01-2000)";
+            _Error_Alerts[4] = "No such user exists in the database";
 
             //Second way of initializing an array
             //{

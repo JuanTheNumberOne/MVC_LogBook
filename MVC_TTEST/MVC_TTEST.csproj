@@ -207,6 +207,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Test_DB.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\User_Model.cs" />
     <Compile Include="Models\USER_PARAMETER_LOGS.cs">
       <DependentUpon>Test_DB.tt</DependentUpon>
     </Compile>
