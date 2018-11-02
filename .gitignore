@@ -330,7 +330,6 @@ ASALocalRun/
 .mfractor/
 
 #Other
-App_Start/
 Global.asax
 Content
 Global.asax.cs
